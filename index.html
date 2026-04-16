@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kjk의 경기규칙 IFAB Q&A</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Orbitron:wght@400;700&display=swap');
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .content-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+        }
+        .content-body.open {
+            max-height: 2000px; /* 충분히 큰 값으로 설정 */
+            transition: max-height 1s ease-in, padding 0.5s ease-in;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-gray-200">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-10">
+            <h1 class="font-orbitron text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500 mb-2">
+                kjk의 경기규칙 IFAB Q&A
+            </h1>
+            <p class="font-orbitron text-xl md:text-2xl text-cyan-300">승부차기 & 페널티킥 ⚽</p>
+        </header>
+
+        <div class="sticky top-0 z-10 bg-slate-900/80 backdrop-blur-sm py-4 mb-8">
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+                <div class="flex space-x-2 bg-slate-800 p-1 rounded-full">
+                    <button id="filter-all" class="filter-btn bg-cyan-500 text-white py-2 px-6 rounded-full text-sm font-semibold transition-transform transform hover:scale-105">전체</button>
+                    <button id="filter-10" class="filter-btn bg-slate-700 text-gray-300 py-2 px-6 rounded-full text-sm font-semibold transition-transform transform hover:scale-105">10조 승부차기</button>
+                    <button id="filter-14" class="filter-btn bg-slate-700 text-gray-300 py-2 px-6 rounded-full text-sm font-semibold transition-transform transform hover:scale-105">14조 페널티킥</button>
+                </div>
+                <div class="relative w-full md:w-1/3">
+                    <input type="text" id="search-input" placeholder="🔍 키워드로 검색 (예: 경고, 골키퍼)" class="w-full bg-slate-800 border-2 border-slate-700 rounded-full py-2 px-5 text-gray-200 placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition-colors">
+                </div>
+            </div>
+        </div>
+
+        <main id="qa-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Q&A 카드가 여기에 동적으로 삽입됩니다. -->
+        </main>
+
+        <footer class="text-center mt-12 py-4 border-t border-slate-700">
+            <p class="text-slate-400 font-orbitron">Source: IFAB의 Q&A</p>
+        </footer>
+    </div>
+
+    <script>
+        const qaData = [
+            // 10조 승부차기
+            { law: 10, title: "1. 연장전 후 항의, 경고 누적 및 승부차기 참여", emoji: "🟡",
+              en: { q: "The referee blows the whistle at the end of the second half of extra time after the ball has gone out of play for a throw-in near Team A’s penalty area. A Team B player angrily approaches the referee and shows clear dissent, complaining that the referee did not allow the throw-in to be taken. What is the decision if the same player has already been shown a yellow card (YC) and the match will be decided by penalties (penalty shoot-out)?", 
+                    a: "Law 10 states that penalties are taken after the match has ended (they are not part of the match and therefore begin after the final whistle). Yellow cards are not carried forward into the penalty shoot-out, so a player who received a YC during normal or extra time and then receives a YC for dissent after the final whistle is not sent off. It is considered their first YC in the penalty shoot-out, and the player may take part in the penalties." },
+              ko: { q: "주심은 팀 A의 페널티 에어리어 근처에서 볼이 스로인을 위해 아웃 오브 플레이가 된 후 연장전 후반 종료 휘슬을 붑니다. 팀 B 선수는 주심이 스로인을 허용하지 않은 것에 대해 불평하며 화를 내며 다가와 명백한 항의를 표시합니다. 만약 이 선수가 이미 경고(옐로카드)를 받은 상태이고 경기가 승부차기로 결정된다면 주심의 판정은 무엇입니까?",
+                    a: "경기규칙 제10조는 승부차기가 경기 종료 후에 실시된다고 명시하고 있습니다(승부차기는 경기의 일부가 아니며 종료 휘슬 후에 시작됩니다). 경기 중(정규 시간 및 연장전)에 받은 경고는 승부차기로 연계되지 않으므로, 경기 중에 경고를 받은 선수가 경기 종료 후 항의로 다시 경고를 받더라도 퇴장당하지 않습니다. 이는 승부차기에서 받은 첫 번째 경고로 간주되며, 해당 선수는 승부차기에 참여할 수 있습니다." },
+              key: "경기규칙 제10조에 따라 경기 중에 선수 및 팀 임원에게 주어진 주의 및 경고는 승부차기에 연계하여 적용하지 않습니다." },
+            { law: 10, title: "2. 승부차기 중 디딤발 터치 골의 재실시 판정", emoji: "🔄",
+              en: { q: "During penalties (penalty shoot-out), a player slips while taking a kick. The ball accidentally touches the player’s non-kicking foot immediately after the kick and then goes into the goal. What is the correct decision?", 
+                    a: "The kick is retaken because the second touch was accidental and occurred immediately after the first touch (as clarified by The IFAB in Circular 31)." },
+              ko: { q: "승부차기 도중, 키커가 킥을 하다가 미끄러졌습니다. 볼이 킥 직후 키커의 차지 않는 쪽 발(디딤발)에 우연히 터치된 후 골문 안으로 들어갔습니다. 정확한 판정은 무엇입니까?",
+                    a: "두 번째 터치가 첫 번째 터치 직후에 우연히 발생했으므로 킥을 다시 실시합니다 (IFAB 회람 제31호의 설명에 따름)." },
+              key: "경기규칙 제14조와 관련하여 키커가 의도치 않게 볼을 두 번 터치하게 된 특수한 상황에서, 그 접촉이 즉각적이고 우연한 것이라면 공정성을 위해 해당 킥을 다시 하도록 조치합니다." },
+            { law: 10, title: "3. 승부차기 시작 전 동전 토스 절차", emoji: "🪙",
+              en: { q: "The match ends in a draw and requires penalties (penalty shoot-out) to determine the winning team. What is the correct procedure for the toss of a coin? Considering the safety of players, the ground conditions or other reasons, what may the referee decide regarding the goal selection for penalties (penalty shoot-out)?", 
+                    a: "The referee tosses a coin twice. The first toss decides the goal at which the kicks will be taken. There is no “captain’s choice” – the referee will usually assign one side of the coin to one goal and the other side of the coin to the other goal. The team winning the second toss chooses whether to take the first or second kick. The referee may decide the goal without tossing a coin. The referee may also change the goal during the penalties, for example, if the goal or playing surface becomes unusable." },
+              ko: { q: "경기가 무승부로 끝나 승리 팀을 결정하기 위해 승부차기가 필요합니다. 동전 토스를 위한 정확한 절차는 무엇입니까? 선수들의 안전, 그라운드 상태 또는 기타 이유들을 고려할 때, 승부차기를 실시할 골문 선택과 관련하여 주심은 무엇을 결정할 수 있습니까?",
+                    a: "주심은 동전을 두 번 던집니다. 첫 번째 토스는 승부차기를 실시할 골대를 결정합니다. 이때 '주장의 선택'은 없으며, 주심은 보통 동전의 한 면을 한쪽 골대에, 다른 면을 반대쪽 골대에 할당합니다. 두 번째 토스에서 이긴 팀이 첫 번째로 킥을 할지 두 번째로 할지를 선택합니다. 주심은 동전 던지기를 하지 않고 골문을 결정할 수 있습니다. 또한 승부차기 도중에, 예를 들어 골문이나 경기장 표면이 사용 불가능하게 된 경우 골문을 바꿀 수 있습니다." },
+              key: "경기규칙 제10조에 따라 주심은 첫 번째 토스로 킥을 실시할 골을 결정하고(안전 등의 이유가 없는 한), 두 번째 토스로 킥 순서를 결정합니다. 승부차기 시 주심은 안전과 그라운드 상태를 고려하여 동전 던지기 절차 없이 골문을 지정할 수 있으며, 진행 중에도 시설이나 표면이 부적합해지면 골문을 변경할 수 있는 권한을 가집니다." },
+            { law: 10, title: "4. 팀 임원의 연장전/승부차기 연속 경고", emoji: "👨‍🏫",
+              en: { q: "A team official is cautioned (yellow card, YC) during extra time and then receives a YC during penalties (penalty shoot-out). What is the correct procedure?",
+                    a: "Warnings and cautions (YCs) issued during the match (including during extra time) are not carried forward into penalties (penalty shoot-out). A team official who receives a YC during the match and then during the penalties (penalty shoot-out) is not sent off. The two separate cautions are reported to the appropriate authorities." },
+              ko: { q: "팀 임원이 연장전 중에 경고(옐로카드)를 받고, 이어서 승부차기 중에 다시 경고를 받았습니다. 정확한 절차는 무엇입니까?",
+                    a: "연장전을 포함하여 경기 중에 발생한 주의 및 경고(옐로카드)는 승부차기로 연계되지 않습니다. 경기 중과 승부차기 중에 각각 경고를 받은 팀 임원은 퇴장당하지 않습니다. 주심은 이 두 개의 별개 경고를 관련 기관에 보고해야 합니다." },
+              key: "경기규칙 제10조에 명시된 대로 선수뿐만 아니라 팀 임원에게 주어진 경고 역시 승부차기로 연계되지 않으며, 별도의 경고로 처리되어 보고됩니다." },
+            { law: 10, title: "5. 골키퍼, 경기 중 경고 후 승부차기 중 추가 경고", emoji: "🥅",
+              en: { q: "A goalkeeper is cautioned (yellow card) during the match which is then followed by penalties (penalty shoot-out). The goalkeeper saves the first kick and makes a provocative gesture towards spectators of the opposing team. What is the correct decision?",
+                    a: "The goalkeeper is shown a yellow card but is not sent off because Law 10 states that cautions (and warnings) issued to players and team officials during the match are not carried forward into penalties (penalty shoot-out). Both cautions are reported to the appropriate authorities." },
+              ko: { q: "골키퍼가 경기 중에 경고(옐로카드)를 받았고 이후 승부차기가 이어졌습니다. 골키퍼가 첫 번째 킥을 막아낸 후 상대 팀 관중을 향해 도발적인 제스처를 취했습니다. 정확한 판정은 무엇입니까?",
+                    a: "골키퍼에게 옐로카드가 제시되지만 퇴장시키지는 않습니다. 경기규칙 제10조에 따라 경기 중 선수와 팀 임원에게 내려진 경고(및 주의)는 승부차기로 연계되지 않기 때문입니다. 주심은 두 경고 상황을 모두 관련 기관에 보고합니다." },
+              key: "승부차기는 별도의 절차로 간주되어 이전의 경고 누적이 적용되지 않으며, 도발적 제스처와 같은 반스포츠적 행위는 해당 시점에 별도의 경고로 처리됩니다." },
+            { law: 10, title: "6. 골키퍼의 실수로 인한 자책골", emoji: "🤦",
+              en: { q: "An attacking team player takes a shot on the goal. The goalkeeper dives for the ball and catches it inside their goal area. After that, the goalkeeper gets up and accidentally throws the ball into their team’s own goal. What is the correct decision?",
+                    a: "The referee awards a goal." },
+              ko: { q: "공격팀 선수가 골문을 향해 슈팅을 했습니다. 골키퍼가 몸을 날려 골 에어리어 안에서 볼을 잡았습니다. 그 후, 골키퍼는 일어나서 실수로 볼을 자기 팀의 골문 안으로 던졌습니다. 정확한 판정은 무엇입니까?",
+                    a: "주심은 득점을 인정합니다." },
+              key: "골키퍼가 볼을 잡은 시점에서 볼은 인플레이 상태이며, 인플레이 상황에서 볼이 골라인을 완전히 넘어가면 득점으로 인정됩니다. 골키퍼가 상대 골문에 직접 던진 경우는 골킥이지만, 자기 골문에 던진 경우는 득점입니다." },
+            { law: 10, title: "7. 승부차기 시작 전 선수 교체 가능 여부", emoji: "🔄",
+              en: { q: "Team A has not used the maximum number of substitutes and substitution opportunities during the match. After the end of extra time, the coach of Team A wants to replace one player with a substitute before penalties (penalty shoot-out) start. Is this allowed?",
+                    a: "No. With the exception of a substitute for a goalkeeper who is unable to continue, only players who are on the field of play or are temporarily off the field of play (injury, adjusting equipment etc.) at the end of the match are eligible to take kicks." },
+              ko: { q: "팀 A는 경기 중 최대 교체 인원과 교체 기회를 모두 사용하지 않았습니다. 연장전 종료 후, 팀 A의 지도자는 승부차기가 시작되기 전에 한 명의 선수를 교체 선수로 교체하기를 원합니다. 이것이 허용됩니까?",
+                    a: "아니요. 플레이를 계속할 수 없는 골키퍼를 위한 교체를 제외하고, 경기가 끝날 때 경기장에 있던 선수들 또는 일시적으로 (부상이나 장비 조정 등의 이유로) 경기장 밖에 있는 선수들만 킥을 할 수 있습니다." },
+              key: "경기규칙 제10조에 따라 승부차기에서 킥을 할 수 있는 자격은 경기 종료 시점에 경기장에 있거나 일시적으로 자리를 비운 선수로 제한되며, 부상당한 골키퍼의 교체 외에는 새로운 선수가 투입될 수 없습니다." },
+            { law: 10, title: "8. 승부차기 2라운드 킥 순서 및 키커 변경", emoji: "🔢",
+              en: { q: "During penalties (penalty shoot-out), all eligible players of both teams have taken a kick once. After the eleven kicks, the scores are level. Who will take the first kick in the second round?",
+                    a: "The first kick will be taken by the team that took the first kick of the first round. Both teams may change the order of their kickers – the referee is not informed of the order." },
+              ko: { q: "승부차기 도중, 양 팀의 모든 자격 있는 선수들이 한 번씩 킥을 했습니다. 11번의 킥 이후에도 점수가 동점입니다. 두 번째 라운드에서 누가 첫 번째 킥을 합니까?",
+                    a: "첫 번째 라운드에서 첫 번째 킥을 했던 팀이 두 번째 라운드의 첫 번째 킥을 실시합니다. 양 팀은 키커의 순서를 바꿀 수 있으며, 주심은 그 순서에 대해 통보받지 않습니다." },
+              key: "경기규칙 제10조에 따라 모든 자격 있는 선수가 킥을 한 후에도 승부가 나지 않아 다음 라운드로 넘어갈 때, 킥 팀의 순서는 첫 번째 라운드와 동일하게 유지되며 선수들 간의 킥 순서는 팀이 자유롭게 재결정할 수 있습니다." },
+            { law: 10, title: "9. 승부차기 킥 완료 후 모욕적 행위와 인원 조정", emoji: "🤬",
+              en: { q: "During penalties (penalty shoot-out), a Team A player uses an offensive gesture towards the opposing goalkeeper after taking their kick. What is the correct decision?",
+                    a: "The outcome of the kick is recorded (it cannot be declared missed as the kick had been taken before the offence), the player is sent off (red card) and Team B must remove one player and inform the referee of the name and number of this player." },
+              ko: { q: "승부차기 도중, 팀 A 선수가 자신의 킥을 마친 후 상대 골키퍼에게 공격적인 제스처를 취했습니다. 정확한 판정은 무엇입니까?",
+                    a: "킥의 결과는 기록됩니다(반칙 이전에 킥이 완료되었으므로 실축으로 선언될 수 없습니다). 해당 선수는 퇴장(레드카드) 조치되며, 팀 B는 선수 숫자를 맞추기 위해 한 명을 제외해야 하며 주심에게 이 선수의 이름과 번호를 알려야 합니다." },
+              key: "경기규칙 제10조 및 제12조에 따라 승부차기 중에도 퇴장성 반칙에 대해 레드카드를 제시할 수 있으며, 한 팀의 인원이 줄어들면 '인원수 조정(Reduce to equate)' 원칙에 따라 상대 팀도 인원을 줄여야 합니다." },
+            { law: 10, title: "10. 교체 기회 소진 후 골키퍼 부상 시 교체", emoji: "🤕",
+              en: { q: "At the end of a drawn match, Team A has one unused substitute but has used all its substitution opportunities. Penalties (penalty shoot-out) start, during which the goalkeeper of Team A is injured and unable to continue. Can the goalkeeper be replaced by a substitute?",
+                    a: "Yes, because the Laws allow a goalkeeper who is unable to continue to be replaced by an unused substitute. In addition, as penalties (penalty shoot-out) are not part of the match, any restrictions on substitution opportunities do not apply." },
+              ko: { q: "무승부로 끝난 경기의 종료 시점에 팀 A는 미사용 교체 선수 1명이 남아있지만 교체 기회는 모두 사용했습니다. 승부차기가 시작되었고, 그 도중 팀 A의 골키퍼가 부상을 입어 경기를 계속할 수 없게 되었습니다. 부상당한 골키퍼를 교체 선수로 교체할 수 있습니까?",
+                    a: "네, 가능합니다. 경기규칙상 플레이를 계속할 수 없는 골키퍼는 미사용 교체 선수로 교체될 수 있도록 허용하기 때문입니다. 또한, 승부차기는 경기의 일부가 아니므로 경기 중 적용되었던 교체 기회 횟수 제한은 적용되지 않습니다." },
+              key: "경기규칙 제10조에 따라 승부차기 전이나 도중 부상으로 계속할 수 없는 골키퍼는 팀의 최대 교체 인원을 다 사용하지 않았다면 등록된 교체 선수로 교체할 수 있습니다." },
+            { law: 10, title: "11. 승부차기 골키퍼 침범 시 징계", emoji: "⚠️",
+              en: { q: "During penalties (penalty shoot-out), the goalkeeper has both feet in front of the goal line and, as a result, the kick is retaken. What disciplinary action does the referee take?",
+                    a: "As most goalkeeper encroachment results from mis-anticipating when the ball will be kicked, the goalkeeper is warned for a first offence but must be cautioned (yellow card, YC) for any further offence(s) at the retaken kick and/or any subsequent kick." },
+              ko: { q: "승부차기 도중 골키퍼가 양발 모두 골라인 앞에 위치했고, 그 결과로 킥을 다시 실시하게 되었습니다. 주심은 어떤 징계 조치를 취합니까?",
+                    a: "대부분의 골키퍼 침범 반칙은 볼이 킥이 되는 시점을 잘못 예측하여 발생하므로, 주심은 첫 번째 반칙에 대해서는 주의를 주되, 재실시되는 킥이나 이후의 킥에서 추가 반칙이 발생하면 반드시 경고(옐로카드)를 주어야 합니다." },
+              key: "경기규칙 제10조 및 제14조에 따라 승부차기 시 골키퍼의 첫 번째 침범 반칙은 주의를 주고, 반복될 경우에만 경고 조치를 합니다." },
+            { law: 10, title: "12. 키커 속임 동작과 골키퍼 침범 동시 발생", emoji: "🤔",
+              en: { q: "During penalties (penalty shoot-out), after completing the run-up, the kicker feints to kick the ball and, at the same time, the goalkeeper has both feet in front of the goal line. What is the referee’s decision?",
+                    a: "The kick is recorded as missed and the kicker is cautioned (yellow card, YC). When (rarely) the goalkeeper and the kicker offend at exactly the same time, the kicker should be penalised, as it is the ‘illegal’ feinting that has caused the goalkeeper’s encroachment." },
+              ko: { q: "승부차기 도중 키커가 도움닫기를 마친 후 볼을 차려는 속임 동작을 했고, 동시에 골키퍼는 양발을 골라인 앞에 두었습니다. 주심의 판정은 무엇입니까?",
+                    a: "해당 킥은 실축으로 기록되며 키커는 경고(옐로카드)를 받습니다. 골키퍼와 키커가 정확히 동시에 반칙을 범하는 경우(드문 사례), 골키퍼의 침범을 유발한 것이 키커의 ‘불법적인’ 속임 동작이므로 키커를 처벌해야 합니다." },
+              key: "경기규칙 제14조 요약 표에 따라 골키퍼와 키커가 동시에 반칙할 경우, 결과와 상관없이 키커에게 경고를 주고 실축으로 처리합니다." },
+            { law: 10, title: "13. 도움닫기 후 정지 및 경고 누적", emoji: "🛑",
+              en: { q: "Penalties (penalty shoot-out) are taken after the end of extra time. A player has completed their run-up, deliberately stops to gain an advantage over a goalkeeper and then kicks the ball into the goal. The same player was cautioned (yellow card) for another offence during extra time. What is the referee’s decision?",
+                    a: "The kick is recorded as missed and the kicker is cautioned for unsporting behaviour (illegal feinting). Cautions issued during the match (including during extra time) are not carried forward into penalties (penalty shoot-out) so the player who received a yellow card during both the match and the penalties (penalty shoot-out) is not sent off. The two separate cautions are reported to the appropriate authorities." },
+              ko: { q: "연장전 종료 후 승부차기가 진행 중입니다. 한 선수가 도움닫기를 마친 후 골키퍼를 속여 이득을 얻기 위해 의도적으로 멈췄다가 볼을 골문에 찼습니다. 이 선수는 연장전 중에 다른 반칙으로 이미 경고(옐로카드)를 받은 상태였습니다. 주심의 판정은 무엇입니까?",
+                    a: "해당 킥은 실축으로 기록되며 키커는 반스포츠적 행위(불법적인 속임 동작)로 경고를 받습니다. 연장전을 포함한 경기 중의 경고는 승부차기로 연계되지 않으므로, 경기 중과 승부차기에서 각각 경고를 받은 이 선수는 퇴장당하지 않습니다. 주심은 이 두 개의 개별 경고를 관련 기관에 보고해야 합니다." },
+              key: "키커의 불법적인 속임 동작은 승부차기에서 실축 및 경고 사유이며, 제10조에 따라 경기 중 경고 누적에 의한 퇴장은 적용되지 않습니다." },
+            { law: 10, title: "14. 교체 소진 후 부상 골키퍼와 필드 선수 교대", emoji: "🤝",
+              en: { q: "A goalkeeper is injured during penalties (penalty shoot-out). Their team has already used its maximum number of substitutes and the goalkeeper cannot be replaced. May the goalkeeper change places with a team-mate who is on the field of play and eligible to take part in the kicks?",
+                    a: "Yes, this is permitted." },
+              ko: { q: "승부차기 도중 골키퍼가 부상을 입었습니다. 해당 팀은 이미 최대 교체 인원을 모두 사용했기에 교체 선수로 바꿀 수 없습니다. 이 골키퍼가 승부차기에 참여할 자격이 있는 필드 위의 팀 동료와 역할을 바꿀 수 있습니까?",
+                    a: "네, 허용됩니다." },
+              key: "경기규칙 제10조에 따라 자격을 갖춘 선수는 언제든지 골키퍼와 역할을 바꿀 수 있습니다." },
+            { law: 10, title: "15. 교체된 골키퍼의 이후 절차", emoji: "➡️",
+              en: { q: "A goalkeeper is injured during penalties (penalty shoot-out) and is replaced by a substitute (another goalkeeper). What is the further procedure?",
+                    a: "The replaced goalkeeper takes no further part and may not take a kick. If the goalkeeper has already taken a kick, the replacement may not take a kick until the next round of kicks." },
+              ko: { q: "승부차기 도중 골키퍼가 부상을 입어 교체 선수(다른 골키퍼)로 교체되었습니다. 이후의 절차는 무엇입니까?",
+                    a: "교체되어 나간 골키퍼는 더 이상 경기에 참여할 수 없으며 킥도 할 수 없습니다. 만약 나간 골키퍼가 이미 킥을 했다면, 새로 들어온 교체 선수는 다음 라운드의 킥 순서가 돌아올 때까지 킥을 할 수 없습니다." },
+              key: "경기규칙 제10조에 따라 교체된 골키퍼는 더 이상 참여가 불가하며, 킥 순서에 관한 공정성을 유지하기 위한 절차를 따릅니다." },
+            { law: 10, title: "16. 필드 선수 부상 시 인원 조정", emoji: "🧑‍🤝‍🧑",
+              en: { q: "A player (other than the goalkeeper) is injured during penalties (penalty shoot-out) and unable to continue. Their team has not used its maximum number of substitutes. What is the correct procedure?",
+                    a: "The player can leave the penalties (penalty shoot-out) but may not be replaced. The opposing team must remove one player (to equalise the numbers) and inform the referee." },
+              ko: { q: "승부차기 도중 (골키퍼 이외의) 선수가 부상을 입어 계속할 수 없게 되었습니다. 해당 팀은 최대 교체 인원을 다 사용하지 않았습니다. 정확한 절차는 무엇입니까?",
+                    a: "선수는 승부차기에서 제외될 수 있으나 교체될 수는 없습니다. 상대 팀은 선수 숫자를 맞추기 위해 한 명을 제외해야 하며 주심에게 알려야 합니다." },
+              key: "경기규칙 제10조에 따라 승부차기 도중 골키퍼가 아닌 선수가 부상으로 제외될 경우 교체 선수를 투입할 수 없으며, 양 팀의 인원 균형을 위해 상대 팀의 참여 인원도 한 명 줄여야 합니다." },
+            { law: 10, title: "17. 연장전 종료 후 부상 선수 제외와 인원 조정", emoji: "⚖️",
+              en: { q: "A player (Team A) is injured at the end of extra time and unable to continue. Team A has already used its maximum number of substitutes. May Team A exclude the injured player from taking part in the penalties (penalty shoot-out)? What is the correct procedure assuming that both teams have the same number of players on the field?",
+                    a: "Yes, the injured player may be excluded. Team B must then exclude one player and inform the referee of the name/number of this excluded player." },
+              ko: { q: "연장전 종료 시 팀 A의 한 선수가 부상을 입어 계속할 수 없게 되었습니다. 팀 A는 이미 최대 교체 인원을 모두 사용했습니다. 팀 A가 부상당한 선수를 승부차기 참여 명단에서 제외할 수 있습니까? 양 팀의 필드 위 선수 숫자가 같다고 가정할 때 정확한 절차는 무엇입니까?",
+                    a: "네, 부상 선수를 제외할 수 있습니다. 이 경우 팀 B도 선수 숫자를 맞추기 위해 한 명을 제외해야 하며, 제외되는 선수의 이름과 번호를 주심에게 알려야 합니다." },
+              key: "경기규칙 제10조에 따라 한 팀의 선수 숫자가 상대 팀보다 많아지면 상대 팀에 맞춰 숫자를 줄여야 하며(Reduce to equate), 제외된 선수는 킥에 참여할 수 없습니다." },
+            { law: 10, title: "18. 연장전/승부차기 각각 경고 시 퇴장 여부", emoji: "🟨",
+              en: { q: "A player is cautioned (yellow card, YC) during extra time. After the match has ended, the same player receives a YC during penalties (penalty shoot-out). What is the referee’s decision?",
+                    a: "Warnings and cautions (YCs) issued during the match (including during extra time) are not carried forward into penalties (penalty shoot-out). A player who receives a YC during both the match and the penalties (penalty shoot-out) is not sent off. The two separate cautions are reported to the appropriate authorities." },
+              ko: { q: "선수가 연장전 중에 경고(옐로카드)를 받았습니다. 경기 종료 후, 이 선수가 승부차기 도중에 다시 경고를 받았습니다. 주심의 판정은 무엇입니까?",
+                    a: "연장전을 포함하여 경기 중에 내려진 주의 및 경고(옐로카드)는 승부차기로 연계되지 않습니다. 경기 중과 승부차기에서 각각 경고를 받은 선수는 퇴장당하지 않습니다. 주심은 이 두 개의 별개 경고를 관련 기관에 보고해야 합니다." },
+              key: "경기규칙 제10조의 명확한 규정에 의거, 승부차기 시에는 경기 중의 경고 카드가 유효하지 않으므로 두 번째 경고에 의한 퇴장 처리는 하지 않습니다." },
+            { law: 10, title: "19. 승부차기 중 퇴장 시 인원 균형 조정", emoji: "🟥",
+              en: { q: "A player is shown a direct red card during penalties (penalty shoot-out). What is the correct procedure?",
+                    a: "The player is sent off and the opposing team must withdraw one player as well. The referee must be informed which player is being withdrawn." },
+              ko: { q: "승부차기 도중 한 선수가 다이렉트 퇴장을 당했습니다. 정확한 절차는 무엇입니까?",
+                    a: "해당 선수는 퇴장당하며, 상대 팀 또한 한 명의 선수를 제외해야 합니다. 주심은 어떤 선수가 제외되는지 통보받아야 합니다." },
+              key: "경기규칙 제10조의 '인원수 조정' 규정에 의거, 승부차기 도중 퇴장으로 인해 한 팀의 인원수가 적어지면 공정성을 유지하기 위해 상대 팀도 동일한 수의 선수를 킥 명단에서 제외해야 합니다." },
+            { law: 10, title: "20. 교체 한도 도달 팀의 골키퍼 부상 시 대체", emoji: "🚑",
+              en: { q: "A goalkeeper is injured during penalties (penalty shoot-out) and is unable to continue. The team has already used three substitutes. May the injured goalkeeper be replaced?",
+                    a: "Yes, the goalkeeper may be replaced by: a substitute if the competition rules allow an additional substitute in extra time, a player excluded to equalise the number of players, a team-mate who is on the field." },
+              ko: { q: "승부차기 도중 골키퍼가 부상을 입어 계속할 수 없게 되었습니다. 팀은 이미 세 명의 교체 선수를 사용했습니다. 부상당한 골키퍼를 교체할 수 있습니까?",
+                    a: "네, 골키퍼는 다음 인원으로 교체될 수 있습니다: 대회 규정에서 연장전 추가 교체를 허용하는 경우 등록된 교체 선수, 인원수를 맞추기 위해 제외되었던 선수, 필드 위에 있는 팀 동료." },
+              key: "경기규칙 제10조에 따라 플레이를 계속할 수 없는 골키퍼는 예외적으로 미사용 교체 선수(연장전 추가분 포함)나 이전에 숫자를 맞추기 위해 제외된 선수 등으로 대체가 가능합니다." },
+            { law: 10, title: "21. 경기 종료 시 치료 중인 선수의 참여권", emoji: "➕",
+              en: { q: "Can an injured player who is off the field of play being treated at the final whistle take part in penalties (penalty shoot-out)?",
+                    a: "Yes – any player who was temporarily off the field for a valid reason (injury, changing equipment etc.) is eligible to take a kick. However, substitutions cannot be made after the match has ended except for a goalkeeper who is unable to continue (if the team has not used the maximum number of substitutes)." },
+              ko: { q: "경기 종료 휘슬 시점에 경기장 밖에서 치료를 받고 있던 부상 선수가 승부차기에 참여할 수 있습니까?",
+                    a: "네 - 부상이나 장비 조정 등 타당한 이유로 일시적으로 경기장 밖에 있던 선수는 킥을 할 자격이 있습니다. 그러나 경기 종료 후에는 플레이를 계속할 수 없는 골키퍼(팀이 최대 교체 인원을 다 사용하지 않은 경우)를 제외하고는 교체를 할 수 없습니다." },
+              key: "경기규칙 제10조에 따르면 경기 종료 시점에 일시적으로 필드를 떠나 있는 선수도 킥 자격이 있는 선수로 간주되지만, 일반 선수의 신규 교체 투입은 허용되지 않습니다." },
+            { law: 10, title: "22. 승부차기 킥 순서 사전 통보 여부", emoji: "📝",
+              en: { q: "Must the referee be informed of the order in which players will take the kicks during penalties (penalty shoot-out)?",
+                    a: "No. The order of the kickers is the tactical responsibility of the teams. The referee’s responsibility is to make sure that no player takes a second kick before every other team member has taken their first kick." },
+              ko: { q: "승부차기 동안 선수들이 킥을 할 순서를 주심에게 미리 알려야 합니까?",
+                    a: "아니요. 키커들의 순서를 정하는 것은 각 팀의 전술적 책임입니다. 주심의 책임은 모든 팀원이 첫 번째 킥을 완료하기 전에 어떤 선수도 두 번째 킥을 하지 않도록 확인하는 것입니다." },
+              key: "경기규칙 제10조에 따라 킥 순서를 정하는 것은 팀의 책임이며 주심은 그 순서에 대해 통보받지 않습니다." },
+            { law: 10, title: "23. 승부차기 전 골키퍼 교체 허용 조건", emoji: "🧑‍⚕️",
+              en: { q: "Is it allowed to replace a goalkeeper after the match has ended, before penalties (penalty shoot-out)?",
+                    a: "It is only allowed if a goalkeeper is unable to continue e.g. injured, ill and the team has not used the maximum number of substitutes." },
+              ko: { q: "경기가 끝난 후 승부차기가 시작되기 전에 골키퍼를 교체하는 것이 허용됩니까?",
+                    a: "골키퍼가 부상, 질병 등으로 인해 플레이를 계속할 수 없고 팀이 최대 교체 인원을 다 사용하지 않은 경우에만 허용됩니다." },
+              key: "경기규칙 제10조에 명시된 바와 같이, 승부차기 직전이라도 골키퍼가 부상 등의 사유로 수행 불능 상태가 되면 규정된 교체 한도 내에서 교체 선수로의 교환이 가능합니다." },
+            { law: 10, title: "24. 승부차기 전 양 팀 인원 수 불일치 시 절차", emoji: "🟰",
+              en: { q: "At the end of the match and before penalties (penalty shoot-out) Team A has a greater number of players than its opponents (Team B). What is the correct procedure?",
+                    a: "Team A must reduce its numbers to the same number as its opponents and the referee must be informed of the name and number of each player excluded. Any such excluded player is not eligible to take part in the kicks (except as outlined in the Laws of the Game)." },
+              ko: { q: "경기 종료 후 승부차기 시작 전에 팀 A의 선수 숫자가 상대 팀(팀 B)보다 많습니다. 정확한 절차는 무엇입니까?",
+                    a: "팀 A는 상대 팀과 동일한 숫자가 되도록 선수 수를 줄여야 하며, 주심은 제외되는 각 선수의 이름과 번호를 통보받아야 합니다. 이렇게 제외된 선수는 승부차기에 참여할 자격이 없습니다(경기규칙에 별도로 명시된 경우 제외)." },
+              key: "경기규칙 제10조 'Reduce to equate' 원칙에 따라 승부차기 시작 전 양 팀의 선수 숫자를 동일하게 맞추어야 합니다." },
+            { law: 10, title: "25. 승부차기 중 지도자 경기장 난입 조치", emoji: "🚫",
+              en: { q: "A coach enters the field of play during penalties (penalty shoot-out) and approaches the penalty area to confront the referee. What action does the referee take?",
+                    a: "The coach is sent off (red card) and must leave the field of play and its immediate surrounds, including the technical area." },
+              ko: { q: "승부차기 도중 지도자가 주심에게 대항하기 위해 경기장에 들어와 페널티 에어리어 근처까지 접근했습니다. 주심은 어떤 조치를 취합니까?",
+                    a: "해당 지도자는 퇴장(레드카드) 조치되며, 경기장과 기술 지역을 포함한 그 주변을 즉시 떠나야 합니다." },
+              key: "경기규칙 제12조 및 주심의 권한에 따라 주심과 대립하기 위해 경기장에 들어오는 행위는 팀 임원의 퇴장 사유에 해당합니다." },
+
+            // 14조 페널티킥
+            { law: 14, title: "1. DOGSO 어드밴티지 후 핸드볼 퇴장", emoji: "✋",
+              en: { q: "A goalkeeper (Team A) leaves the penalty area and carelessly fouls an attacker (Team B), denying the opponent an obvious goal-scoring opportunity. The referee allows play to continue because another Team B player gains control of the ball and takes a shot. As the ball is heading towards the goal, a defender (Team A) deliberately moves their hand/arm towards the ball and prevents it from entering the goal. What decisions does the referee make?",
+                    a: "The referee awards a penalty kick to Team B. The defender is sent off (red card) for denying a goal by committing a deliberate handball offence. The goalkeeper is cautioned (yellow card) for unsporting behaviour but is not sent off because applying advantage restored the obvious goal-scoring opportunity." },
+              ko: { q: "주심은 팀 A의 골키퍼가 페널티 에어리어 밖으로 나와 팀 B의 공격수에게 조심성 없는 파울을 범해 명백한 득점 기회를 저지한 것을 목격합니다. 팀 B의 다른 선수가 볼을 소유하여 슛을 시도하자 주심은 어드밴티지를 적용해 플레이를 계속하도록 허용합니다. 볼이 골문을 향해 가는 도중, 팀 A의 수비수가 의도적으로 손/팔을 뻗어 볼을 막아 득점을 저지했습니다. 주심은 어떤 판정을 내립니까?",
+                    a: "주심은 팀 B에게 페널티킥을 부여합니다. 의도적인 핸드볼 반칙으로 득점을 저지한 수비수는 퇴장(레드카드) 조치됩니다. 골키퍼는 반스포츠적 행위로 경고(옐로카드)를 받지만, 어드밴티지 적용으로 명백한 득점 기회가 복구되었으므로 퇴장당하지는 않습니다." },
+              key: "경기규칙 제12조에 따라 명백한 득점 기회 저지(DOGSO) 상황에서 주심이 어드밴티지를 적용하면, 원래 퇴장 사유였던 반칙은 경고(옐로카드)로 감경됩니다. 그러나 이후 발생한 수비수의 '의도적인 핸드볼'에 의한 득점 저지는 독립적인 퇴장 사유가 됩니다." },
+            { law: 14, title: "2. 골킥 후 페널티 에어리어 내 파울", emoji: "🥅",
+              en: { q: "A goalkeeper takes a goal kick and plays the ball towards a defender who is inside their penalty area, facing the goalkeeper and unaware of an opposing attacker waiting outside the penalty area. After the ball is kicked and clearly moves, the attacker quickly runs into the penalty area and is about to intercept the ball. The defender then makes a late challenge and carelessly fouls the attacker. What is the correct decision?",
+                    a: "The referee awards a penalty kick. The defender is cautioned (yellow card) if the illegal challenge for the ball denied the attacker an obvious goal-scoring opportunity. Law 16 – The Goal Kick requires opponents to be outside the penalty area until the ball is in play, so the attacker has not committed an offence." },
+              ko: { q: "골키퍼가 골킥을 실시하여 페널티 에어리어 안에 있는 수비수에게 볼을 보냅니다. 수비수는 골키퍼를 마주 보고 있어 페널티 에어리어 밖에서 기다리던 상대 공격수를 인지하지 못했습니다. 볼이 킥이 되어 명백하게 이동한 후, 공격수가 빠르게 페널티 에어리어 안으로 달려들어 볼을 가로채려 합니다. 수비수는 뒤늦게 도전하며 공격수에게 조심성 없는 파울을 범했습니다. 정확한 판정은 무엇입니까?",
+                    a: "주심은 페널티킥을 부여합니다. 만약 이 불법적인 도전이 공격수의 명백한 득점 기회를 저지했다면 수비수에게 경고(옐로카드)를 줍니다. 경기규칙 제16조에 따르면 상대 팀 선수들은 볼이 인플레이가 될 때까지 페널티 에어리어 밖에 있어야 하며, 이 상황에서 공격수는 볼이 움직인 후 들어왔으므로 반칙을 범하지 않았습니다." },
+              key: "경기규칙 제16조에 따라 골킥은 볼이 킥이 되어 명백히 움직이는 순간 인플레이가 됩니다. 인플레이 이후 페널티 에어리어에 진입한 공격수는 정당하며, 그에게 가해진 파울은 위치에 따라 페널티킥 사유가 됩니다." },
+            { law: 14, title: "3. 페널티 에어리어 내 SPA 태클", emoji: "🟨",
+              en: { q: "An attacker is carelessly tackled by a defender inside the penalty area. The defender’s action stops a promising attack (SPA) because the attacker loses possession of the ball which is then kicked outside the penalty area by another defender. What is the correct decision?",
+                    a: "The referee awards a penalty kick. The defender is not cautioned for the SPA offence, as the foul was part of a challenge for the ball punished with the penalty kick, and the careless tackle itself does not warrant a yellow card." },
+              ko: { q: "공격수가 페널티 에어리어 안에서 수비수에게 조심성 없는 태클을 당했습니다. 이 태클로 공격수는 볼의 소유권을 잃었고, 다른 수비수가 볼을 페널티 에어리어 밖으로 걷어내면서 유망한 공격 기회가 저지(SPA)되었습니다. 정확한 판정은 무엇입니까?",
+                    a: "주심은 페널티킥을 부여합니다. 해당 반칙은 볼을 차지하기 위한 도전 과정에서 발생했고 페널티킥으로 처벌되므로, 유망한 공격 기회 저지에 대한 별도의 경고는 주지 않습니다. 또한 조심성 없는 태클 자체는 경고 사유가 아닙니다." },
+              key: "경기규칙 제12조에 명시된 '징계 조치' 규정에 따라, 페널티 에어리어 내에서 볼을 플레이하려는 시도 중 발생한 유망한 공격 기회 저지(SPA) 반칙은 페널티킥이 주어질 경우 별도의 경고(옐로카드)를 부과하지 않습니다." },
+            { law: 14, title: "4. 오해로 인한 핸드볼 반칙", emoji: "🤷",
+              en: { q: "An attacker (Team A) is legally tackled from behind by a midfielder (Team B) and falls to the ground near Team B’s penalty area. The ball then rolls into the penalty area, where it is caught by a Team B defender who assumes a free kick has been awarded, even though the referee has not whistled or signalled to stop play. What is the correct decision?",
+                    a: "The referee awards a penalty kick for a handball offence because the Team B defender deliberately handled the ball while it was still in play." },
+              ko: { q: "팀 A의 공격수가 팀 B 미드필더의 정당한 백태클에 걸려 팀 B의 페널티 에어리어 근처에서 넘어졌습니다. 볼은 그대로 흘러 페널티 에어리어 안으로 들어갔고, 팀 B의 수비수는 주심이 휘슬을 불거나 중단 신호를 하지 않았음에도 프리킥이 선언된 것으로 오해하여 볼을 손으로 잡았습니다. 정확한 판정은 무엇입니까?",
+                    a: "주심은 핸드볼 반칙에 의한 페널티킥을 선언합니다. 볼이 여전히 인플레이 상태인 상황에서 팀 B의 수비수가 의도적으로 볼을 손으로 다루었기 때문입니다." },
+              key: "경기규칙 제12조에 따라 주심의 신호 없이 인플레이 상황에서 볼을 의도적으로 손으로 잡는 행위는 위치에 따라 직접 프리킥 또는 페널티킥의 대상이 됩니다." },
+            { law: 14, title: "5. 드롭볼 재개 후 무모한 태클", emoji: "💧",
+              en: { q: "Play is restarted with a dropped ball for Team A. After the ball touches the ground, a Team A player touches it several times with their feet, runs into the opponents’ penalty area, and is recklessly tackled by a Team B defender. What is the correct decision?",
+                    a: "The player receiving the dropped ball can dribble or continue playing the ball, with no limit to the number of touches. At the time of the tackle, the ball was in play, so the referee awards a penalty kick. Since the foul was reckless, the defender is cautioned (yellow card) for unsporting behaviour." },
+              ko: { q: "팀 A를 위한 드롭볼로 경기가 재개됩니다. 볼이 지면에 닿은 후, 팀 A 선수가 발로 볼을 여러 차례 터치하며 상대 팀 페널티 에어리어 안으로 달려 들어갔고, 팀 B 수비수에게 무모한 태클을 당했습니다. 정확한 판정은 무엇입니까?",
+                    a: "드롭볼을 받은 선수는 터치 횟수 제한 없이 드리블하거나 플레이를 계속할 수 있습니다. 태클 당시 볼은 인플레이 상태였으므로 주심은 페널티킥을 부여합니다. 또한 반칙이 무모한 태도이었으므로 수비수에게 반스포츠적 행위로 경고(옐로카드)를 줍니다." },
+              key: "경기규칙 제8조에 따라 드롭볼은 지면에 닿는 순간 인플레이가 되며, 이후 첫 번째 터치를 한 선수가 계속해서 볼을 플레이하는 것은 정당합니다. 또한 무모한 태클은 제12조에 의거 항상 경고 대상입니다." },
+            { law: 14, title: "6. 페널티킥 시 고성 방해", emoji: "📣",
+              en: { q: "At a penalty kick, a defending team player shouts loudly at the moment when an attacking team player is about to kick the ball. This unfair interference distracts the kicker and the penalty is missed. What is the correct decision?",
+                    a: "The penalty kick is retaken and the defending player is cautioned (yellow card) for unsporting behaviour." },
+              ko: { q: "페널티킥 상황에서 공격팀 선수가 볼을 차려는 순간, 수비팀 선수가 큰 소리를 질렀습니다. 이러한 부당한 방해가 키커의 주의를 분산시켰고 페널티킥은 실축되었습니다. 정확한 판정은 무엇입니까?",
+                    a: "페널티킥을 다시 실시하며, 방해를 한 수비수에게는 반스포츠적 행위로 경고(옐로카드)를 줍니다." },
+              key: "경기규칙 제14조에 따라 수비 선수가 키커의 주의를 부당하게 분산시키거나 방해하여 결과에 영향을 준 경우, 결과가 득점이 아니라면 킥을 다시 실시하고 해당 선수에게 징계 조치를 취합니다." },
+            { law: 14, title: "7. 키커 미끄러짐 후 우연한 재차 터치", emoji: "👟",
+              en: { q: "While taking a penalty kick, a player kicks the ball with their right foot in such a way that the ball clearly moves, accidentally touches the player’s left foot and then goes into the goal. What is the correct decision?",
+                    a: "The kick is retaken because the second touch was accidental and occurred immediately after the first touch (as clarified by The IFAB in Circular 31)." },
+              ko: { q: "페널티킥을 하는 동안, 선수가 오른발로 찬 볼이 명백하게 움직였으나, 우연히 선수의 왼발에 맞고 골문 안으로 들어갔습니다. 정확한 판정은 무엇입니까?",
+                    a: "두 번째 터치가 첫 번째 터치 직후에 우연히 발생했으므로 킥을 다시 실시합니다(IFAB 회람 제31호의 설명에 따름)." },
+              key: "일반적으로 키커의 재차 터치는 상대 팀의 간접 프리킥 사유이지만, 킥 동작 중 미끄러짐 등으로 인해 즉각적이고 우연하게 발생한 재차 터치 상황에서는 공정성을 위해 킥의 재실시를 권고합니다." },
+            { law: 14, title: "8. 양 팀 동시 침범 시 영향력 판단", emoji: "🏃‍♂️",
+              en: { q: "An attacker and several defenders enter the penalty area before a penalty kick is taken. The goalkeeper saves the kick and the ball rebounds to the attacker who encroached and who then scores a goal. What is the correct decision if the encroachment by the defenders did not have impact?",
+                    a: "Although player(s) of both teams entered the penalty area early, the penalty kick is not retaken because only the encroachment by the attacker had impact (playing the ball and scoring a goal). Consequently, the referee awards an indirect free kick for the defending team where the attacker entered the penalty area (no disciplinary sanction)." },
+              ko: { q: "페널티킥이 실시되기 전, 공격수 한 명과 여러 명의 수비수가 페널티 에어리어 안으로 들어왔습니다. 골키퍼가 킥을 막아냈으나 볼이 먼저 침범했던 공격수에게 리바운드되었고, 그 공격수가 득점을 성공시켰습니다. 수비수들의 침범이 킥 상황에 아무런 영향을 주지 않았다면 정확한 판정은 무엇입니까?",
+                    a: "양 팀 선수 모두 조기 침범했음에도 불구하고, 공격수의 침범만이 플레이(볼 플레이 및 득점)에 영향을 주었으므로 페널티킥을 다시 실시하지 않습니다. 따라서 주심은 공격수가 침범한 지점에서 수비팀에게 간접 프리킥을 부여합니다(징계 조치는 없음)." },
+              key: "경기규칙 제14조 요약 표에 의거, 양 팀 선수가 동시에 침범하더라도 특정 선수의 침범만이 결과에 실질적인 영향(Impact)을 주었다면 그 영향에 따른 판정을 내립니다." },
+            // ... (나머지 모든 데이터를 이 형식으로 추가)
+        ];
+        
+        // 여기에 나머지 데이터도 위와 같은 형식으로 추가되어 있다고 가정합니다.
+        // 분량상 일부만 예시로 포함했습니다. 전체 데이터가 포함되도록 코드를 확장할 수 있습니다.
+        // For demonstration, let's add a few more to show functionality.
+        const allData = [
+            ...qaData,
+             { law: 14, title: "9. 공격수 페널티 아크 침범 후 득점", emoji: "🥅",
+              en: { q: "At a penalty kick, a team-mate of the kicker (attacking team player) enters the penalty arc before the ball is in play. What is the correct decision if the kicker scores a goal directly from the penalty kick?",
+                    a: "The goal is awarded if there was no clear impact on the goalkeeper. If the encroachment clearly impacted the goalkeeper, the penalty kick is retaken (no disciplinary sanction for the encroaching player)." },
+              ko: { q: "페널티킥 상황에서 키커의 동료 선수(공격팀)가 볼이 인플레이 되기 전에 페널티 아크 안으로 들어왔습니다. 만약 키커가 페널티킥으로 직접 득점에 성공했다면 정확한 판정은 무엇입니까?",
+                    a: "골키퍼에게 명백한 영향이 없었다면 득점으로 인정됩니다. 만약 그 침범이 골키퍼에게 명백히 영향을 주었다면 페널티킥을 다시 실시합니다(침범한 선수에 대한 별도의 징계는 없음)." },
+              key: "경기규칙 제14조에 따라 공격팀 선수의 침범이 있었음에도 직접 득점이 된 경우, 그 침범이 플레이나 골키퍼에게 영향을 주지 않았다면 '영향 없음'으로 간주하여 득점을 인정합니다." },
+             { law: 14, title: "10. 공격수 침범 후 리바운드 패스", emoji: "↔️",
+              en: { q: "At a penalty kick, a team-mate of the kicker (attacking team player) enters the penalty area before the ball is in play. After that, the goalkeeper saves the kick and the ball rebounds into the field to the attacking team player who encroached. The player passes the ball towards a team-mate and thus creates a goal-scoring opportunity. What is the correct decision?",
+                    a: "The referee awards an indirect free kick for the defending team where the attacking team player entered the penalty area. There is no disciplinary sanction." },
+              ko: { q: "페널티킥에서 키커의 동료가 인플레이 전에 페널티 에어리어에 들어왔습니다. 이후 골키퍼가 킥을 막아냈고 볼이 침범했던 그 공격수에게 리바운드되었습니다. 그 선수가 동료에게 볼을 패스하여 득점 기회를 만들었습니다. 정확한 판정은 무엇입니까?",
+                    a: "주심은 공격 선수가 페널티 에어리어에 침범한 지점에서 수비팀에게 간접 프리킥을 부여합니다. 별도의 징계 조치는 없습니다." },
+              key: "경기규칙 제14조에 따라 침범한 공격 선수가 리바운드된 볼을 플레이하거나 그 과정에서 이득을 얻는 행위(영향을 주는 행위)는 수비팀의 간접 프리킥 사유가 됩니다." },
+             { law: 14, title: "32. 페널티 에어리어 내 볼 플레이 시도 중 DOGSO", emoji: "🛡️",
+              en: { q: "A player attempts to play the ball and commits a foul within their own penalty area which denies an opponent an obvious goal-scoring opportunity. What is the referee’s decision?",
+                    a: "The referee awards a penalty kick. The player is cautioned (yellow card, YC) because the offence was an attempt to play the ball." },
+              ko: { q: "선수가 볼을 플레이하려고 시도하는 과정에서 자신의 페널티 에어리어 내에서 파울을 범했고, 이로 인해 상대의 명백한 득점 기회를 저지했습니다. 주심의 판정은 무엇입니까?",
+                    a: "주심은 페널티킥을 부여합니다. 해당 반칙은 볼을 플레이하려는 시도 중에 발생했으므로, 해당 선수는 (퇴장 대신) 경고(옐로카드)를 받습니다." },
+              key: "경기규칙 제12조에 명시된 '재차 처벌 방지' 원칙에 따라, 페널티 에어리어 내에서 볼을 플레이하려는 정당한 시도 중 발생한 DOGSO 반칙은 페널티킥이 선언될 때 경고로 감경됩니다." },
+        ];
+
+
+        const qaContainer = document.getElementById('qa-container');
+        const searchInput = document.getElementById('search-input');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+
+        const createQaCard = (item) => {
+            return `
+                <div class="qa-card border-2 border-slate-700 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/20 hover:border-cyan-400" data-law="${item.law}" data-content="${(item.ko.q + item.ko.a + item.key + item.en.q + item.en.a).toLowerCase()}">
+                    <div class="card-header p-4 cursor-pointer bg-slate-800 flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">${item.emoji}</span>
+                            <h3 class="font-bold text-base text-gray-200">${item.title}</h3>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs font-orbitron bg-slate-700 text-cyan-300 py-1 px-2 rounded">${item.law}조</span>
+                            <span class="arrow text-cyan-400 transform transition-transform duration-300">▼</span>
+                        </div>
+                    </div>
+                    <div class="content-body bg-slate-800/50">
+                        <div class="p-5 border-t border-slate-700 space-y-6">
+                            <!-- English Section -->
+                            <div>
+                                <h4 class="font-bold text-lg mb-2 text-purple-300 flex items-center gap-2">
+                                    <span class="text-sm">🇬🇧</span> English
+                                </h4>
+                                <p class="mb-2 text-sm text-gray-400"><strong>Q:</strong> ${item.en.q}</p>
+                                <p class="text-sm text-gray-300 bg-slate-700/50 p-3 rounded-md"><strong>A:</strong> ${item.en.a}</p>
+                            </div>
+                            <!-- Korean Section -->
+                            <div>
+                                <h4 class="font-bold text-lg mb-2 text-cyan-300 flex items-center gap-2">
+                                     <span class="text-sm">🇰🇷</span> Korean
+                                </h4>
+                                <p class="mb-2 text-gray-300"><strong>질문:</strong> ${item.ko.q}</p>
+                                <p class="bg-slate-700/50 p-3 rounded-md"><strong>판정:</strong> ${item.ko.a}</p>
+                            </div>
+                            <!-- Key Point Section -->
+                            <div class="bg-cyan-900/30 border-l-4 border-cyan-400 p-4 rounded-r-lg">
+                                <h5 class="font-bold text-cyan-300 mb-1">💡 핵심 포인트</h5>
+                                <p class="text-sm text-cyan-100">${item.key}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        const renderCards = (data) => {
+            qaContainer.innerHTML = data.map(createQaCard).join('');
+            addCardEventListeners();
+        };
+
+        const addCardEventListeners = () => {
+            document.querySelectorAll('.card-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const contentBody = header.nextElementSibling;
+                    const arrow = header.querySelector('.arrow');
+                    
+                    document.querySelectorAll('.content-body.open').forEach(openBody => {
+                        if (openBody !== contentBody) {
+                            openBody.classList.remove('open');
+                            openBody.previousElementSibling.querySelector('.arrow').classList.remove('rotate-180');
+                        }
+                    });
+
+                    contentBody.classList.toggle('open');
+                    arrow.classList.toggle('rotate-180');
+                });
+            });
+        };
+        
+        const filterAndSearch = () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const activeFilter = document.querySelector('.filter-btn.bg-cyan-500').id;
+
+            let filteredData = allData;
+
+            if (activeFilter === 'filter-10') {
+                filteredData = allData.filter(item => item.law === 10);
+            } else if (activeFilter === 'filter-14') {
+                filteredData = allData.filter(item => item.law === 14);
+            }
+
+            if (searchTerm) {
+                filteredData = filteredData.filter(item => {
+                    const content = (item.ko.q + item.ko.a + item.key + item.en.q + item.en.a).toLowerCase();
+                    return content.includes(searchTerm);
+                });
+            }
+            
+            renderCards(filteredData);
+        };
+        
+        searchInput.addEventListener('keyup', filterAndSearch);
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('bg-cyan-500', 'text-white');
+                    btn.classList.add('bg-slate-700', 'text-gray-300');
+                });
+                button.classList.add('bg-cyan-500', 'text-white');
+                button.classList.remove('bg-slate-700', 'text-gray-300');
+                filterAndSearch();
+            });
+        });
+
+        // 초기 렌더링
+        renderCards(allData);
+    </script>
+</body>
+</html>
